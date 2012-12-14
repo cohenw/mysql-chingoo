@@ -177,10 +177,6 @@ public class Util {
 		return "December 14, 2012";
 	}
 
-	public static String getScriptionVersion() {
-		return "20121214";
-	}
-
 	public static boolean isNumber(String inputData) {
 		return NumberUtils.isNumber(inputData);
 		//return inputData.matches("[-+]?\\d+(\\.\\d+)?");
