@@ -24,7 +24,9 @@
 	String qry = "SELECT VIEW_DEFINITION FROM information_schema.views WHERE TABLE_NAME='" + view +"' AND TABLE_SCHEMA='" + catalog + "'";
 	String text = cn.queryOne(qry);
 %>
-<h2>VIEW: <%= view %> &nbsp;&nbsp;<a href="Javascript:runQuery('<%=catalog%>','<%=view%>')"><img border=0 src="image/icon_query.png" title="query"></a></h2>
+<h2>VIEW: <%= view %> &nbsp;&nbsp;<a href="Javascript:runQuery('<%=catalog%>','<%=view%>')"><img border=0 src="image/icon_query.png" title="query"></a>
+<a href="pop.jsp?type=VIEW&key=<%=view%>" target="_blank"><img title="Pop Out" border=0 src="image/popout.png"></a>
+</h2>
 
 <table id="TABLE_<%=view%>" width=640 border=0>
 <tr>

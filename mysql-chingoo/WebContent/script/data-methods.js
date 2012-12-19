@@ -210,6 +210,10 @@
 	function reloadData(id) {
 		var divName = "div-" + id;
 		var sql = $("#sql-" + id).html();
+		var ori = $("#ori-" + id).html();
+		pageUrl = "ajax/qry-simple.jsp";
+		if (ori=='V') pageUrl = "ajax/qry-simple-v.jsp";
+
 		$("#sql").val(sql);
 		$("#id").val(id);
 		$("#sortColumn").val($("#sort-"+id).val());
@@ -218,7 +222,7 @@
 		//$('body').css('cursor', 'wait'); 
 		$.ajax({
 			type: 'POST',
-			url: "ajax/qry-simple.jsp",
+			url: pageUrl,
 			data: $("#form0").serialize(),
 			success: function(data){
 				$("#"+divName).html(data);
@@ -494,5 +498,16 @@
 		//alert(temp);
 		$("#sqls").val(temp);
 		document.form_worksheet.submit();
+	}
+	
+	function transposeToggle(id) {
+		var ori = $("#ori-" + id).html();
+		
+		if (ori=='H') ori = 'V';
+		else ori = 'H';
+		
+		$("#ori-" + id).html(ori);
+
+		reloadData(id);
 	}
 	

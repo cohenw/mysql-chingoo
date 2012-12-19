@@ -324,7 +324,6 @@ Rows/Page
 			}
 
 			String colDisp = colName.toLowerCase();
-			String cpasDisp = "";
 			if (pkColList != null && pkColList.contains(colName)) colDisp = "<b>" + colDisp + "</b>";					
 			
 %>

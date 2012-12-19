@@ -128,6 +128,7 @@
 <div style="display: none;" id="sql-<%=id%>"><%= fsql%></div>
 <div style="display: none;" id="mode-<%=id%>">hide</div>
 <div style="display: none;" id="hide-<%=id%>"></div>
+<div style="display: none;" id="ori-<%=id%>">H</div>
 <div id="div-<%=id%>" style="display: none;"></div>
 <br/>
 </div>
@@ -149,6 +150,7 @@
 &nbsp;&nbsp;<a href="javascript:openQuery('<%=id%>')"><img src="image/sql.png" title="<%=sql%>"/></a>
 <div style="display: none;" id="sql-<%=id%>"><%= sql%></div>
 <div style="display: none;" id="mode-<%=id%>">hide</div>
+<div style="display: none;" id="ori-<%=id%>">H</div>
 <div style="display: none;" id="hide-<%=id%>"></div>
 <br/>
 <div id="div-<%=id %>" style1="padding: 5px; background-color: gray;">
@@ -234,6 +236,7 @@
 <div style="display: none;" id="hide-<%=id%>"></div>
 <div style="display: none;" id="sort-<%=id%>"></div>
 <div style="display: none;" id="sortdir-<%=id%>">0</div>
+<div style="display: none;" id="ori-<%=id%>">H</div>
 <div style="display: none;" id="mode-<%=id%>">sort</div>
 <div id="div-<%=id%>" style="margin-left: 70px; display: none;"></div>
 <br/>

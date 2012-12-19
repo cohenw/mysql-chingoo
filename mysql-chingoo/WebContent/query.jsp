@@ -107,20 +107,54 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 			.appendTo( ul );
 		};
 	});
+	
+/* 	$(function() {
+		$( "#globalSearch" ).autocomplete({
+			source: "ajax/auto-complete2.jsp",
+			minLength: 2,
+			select: function( event, ui ) {
+				popObject( ui.item ?
+					ui.item.value: "" );
+			}
+		}).data( "autocomplete" )._renderItem = function( ul, item ) {
+			return $( "<li></li>" )
+			.data( "item.autocomplete", item )
+			.append( "<a>" + item.label + " <span class='rowcountstyle'>" + item.desc + "</span></a>" )
+			.appendTo( ul );
+		};
+	});	
+ */	
+	function popObject(oname) {
+//		alert(oname);
+		$("#popKey").val(oname);
+    	$("#FormPop").submit();
+	}
+	
 	</script>    
 </head> 
 
 <body>
 
+<table>
+<td>
 <img src="image/icon_query.png" align="middle"/> <b>QUERY</b>
-&nbsp;&nbsp;
-<%= cn.getUrlString() %>
-
+</td>
+<td>
+<b><%= cn.getUrlString() %></b>
 &nbsp;&nbsp;&nbsp;
+</td>
+<td>
 <a href="query.jsp" target="_blank">Query</a> |
 <a href="q.jsp" target="_blank">Q</a> |
+<a href="erd_svg.jsp?tname=<%= tbl %>" target="_blank">ERD</a> |
 <a href="worksheet.jsp" target="_blank">Work Sheet</a>
-<br/><br/>
+</td>
+<td>&nbsp;&nbsp;&nbsp;</td>
+<!-- <td>
+Search <input id="globalSearch" style="width: 200px;"/>
+</td>
+ --></table>
+<br/>
 
 <a href="Javascript:toggleHelp()"><img  style="float: left" id="helpDivImage" border="0" src="image/minus.gif"></a>
 <div id="div-help" style="float: left">
@@ -189,6 +223,11 @@ Up to
 <input type="hidden" id="rowsPerPage" name="rowsPerPage" value="20">
 <input type="hidden" id="dataLink" name="dataLink" value="1">
 <input type="hidden" id="preFormat" name="preFormat" value="0">
+</form>
+
+<form id="FormPop" name="FormPop" target="_blank" method="post" action="pop.jsp">
+<input id="popType" name="type" type="hidden" value="OBJECT">
+<input id="popKey" name="key" type="hidden">
 </form>
 
 <%= q.getMessage() %>
