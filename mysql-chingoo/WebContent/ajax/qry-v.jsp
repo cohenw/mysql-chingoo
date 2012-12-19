@@ -323,12 +323,11 @@ Rows/Page
 			}
 
 			String colDisp = colName.toLowerCase();
-			String cpasDisp = "";
 			if (pkColList != null && pkColList.contains(colName)) colDisp = "<b>" + colDisp + "</b>";					
 
 			pkLabel[i] = "<a " + ( highlight?"style='background-color:yellow;'" :"") + 
 					" href=\"Javascript:doAction('" + colName + "', " + (colIdx + offset) + ");\" title=\"" + tooltip + "\">" +
-					colDisp + "</a>" + extraImage + cpasDisp;
+					colDisp + "</a>" + extraImage;
 
 			
 %>
