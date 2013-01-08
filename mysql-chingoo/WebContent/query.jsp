@@ -134,6 +134,11 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 	function editQuery() {
 		$("#queryMain").slideToggle();		
 	}
+	
+	function reloadQuery() {
+		$("#form1").submit();		
+	}
+	
 	</script>    
 </head> 
 
@@ -160,6 +165,7 @@ Search <input id="globalSearch" style="width: 200px;"/>
  --></table>
 <br/>
 
+<a href="Javascript:editQuery()">Edit Query</a>
 <div id="queryMain">
 
 <a href="Javascript:toggleHelp()"><img  style="float: left" id="helpDivImage" border="0" src="image/minus.gif"></a>
@@ -213,12 +219,12 @@ Up to
 <option value="50000" <%= maxRow==50000?"SELECTED":"" %>>50,000</option>
 </select>
 <input type="submit" value="Submit"/>
-&nbsp;
+<!-- &nbsp;
 <input type="button" value="Download" onClick="Javascript:download()"/>
+ -->
 </form>
 
 </div> <!-- end of query main -->
-<a href="Javascript:editQuery()">Edit Query</a>
 
 <form name="form0" id="form0">
 <textarea style="display: none;" id="sql" name="sql" ><%= sql %></textarea>
@@ -263,8 +269,8 @@ Up to
 <TABLE>
 <TD><a class="qryBtn" id="modeSort" href="Javascript:setDoMode('sort')">Sort</a>
 <TD><a class="qryBtn" id="modeCopy" href="Javascript:setDoMode('copy')">Copy&amp;Paste</a></TD>
-<TD><a class="qryBtn" id="modeCopy" href="Javascript:setTranspose()">Transpose</a></TD>
-<!-- <TD><a class="qryBtn" id="modeHide" href="Javascript:setDoMode('hide')">Hide Column</a>
+<!-- <TD><a class="qryBtn" id="modeCopy" href="Javascript:setTranspose()">Transpose</a></TD>
+ --><!-- <TD><a class="qryBtn" id="modeHide" href="Javascript:setDoMode('hide')">Hide Column</a>
 	<span id="showAllCol" style="display: none;">
 		<a href="Javascript:showAllColumn()">Show All Column</a>&nbsp;
 	</span>
@@ -275,7 +281,23 @@ Up to
 <TD><a class="qryBtn" id="modeFilter" href="Javascript:setDoMode('filter')">Filter</a></TD>
 <TD><span id="filter-div"></span></TD>
  -->
-<TD><a class="qryBtn" id="modeFilter2" href="Javascript:setDoMode('filter2')">Filter</a></TD>
+<!-- <TD><a class="qryBtn" id="modeFilter2" href="Javascript:setDoMode('filter2')">Filter</a></TD>
+ -->
+
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>
+<input type="button" value="Transpose" onClick="Javascript:setTranspose()"/>
+</td>
+<td>
+<input type="button" value="Filter" onClick="Javascript:filter2()"/>
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>
+<input type="button" value="Download" onClick="Javascript:download()"/>
+</td>
+<td>
+<input type="button" value="Reload" onClick="Javascript:reloadQuery()"/>
+</td>
 
 </TABLE>
 </div>
