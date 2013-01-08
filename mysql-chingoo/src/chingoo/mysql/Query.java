@@ -16,7 +16,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Dynamic query class
  * This class makes database query upon creation and provides methods for data access 
@@ -524,10 +523,7 @@ public class Query {
 		return list;
 	}
 	
-	public List<FilterRecord> getFilterListWithCount(String col) {
-
-		int colIdx = qData.getColumnIndex(col);
-		
+	public List<FilterRecord> getFilterListWithCount(int colIdx) {
 		HashSet<String> set = new HashSet<String>();
 		Hashtable<String,String> counts = new Hashtable<String, String>(); 
 		int size = qData.rows.size();
@@ -560,6 +556,11 @@ public class Query {
 		
 		return newList;
 	}
+
+	public List<FilterRecord> getFilterListWithCount(String colName) {
+		int colIdx = qData.getColumnIndex(colName);
+		return getFilterListWithCount(colIdx);
+	}
 	
 	public void filter(String col, String val) {
 		int colIdx = qData.getColumnIndex(col);
@@ -571,6 +572,39 @@ public class Query {
 				hideRow[i] = false;
 			else
 				hideRow[i] = true;
+		}
+	}
+
+	public void filter2(String filterCols) {
+		String[] vals = filterCols.split("\\^");
+		int conditions = 0;
+		for (int c=0;c<vals.length;c++) {
+			if (vals[c].equals("")) continue;
+			conditions ++;
+		}
+		if (conditions==0) return;
+
+		int size = qData.rows.size();
+		for (int i=0;i<size;i++) {
+
+			boolean matched = true;
+			for (int c=0;c<vals.length;c++) {
+				if (vals[c].equals("")) continue;
+				DataDef v = qData.rows.get(i).row.get(c);
+
+				if (vals[c].equals(v.value) || vals[c].equals("")) {
+					matched = true;
+				} else {
+					matched = false;
+					break;
+				}
+			}
+			if (!matched) {
+				hideRow[i] = true;
+				continue;
+			}
+
+			hideRow[i] = false;
 		}
 	}
 
