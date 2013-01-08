@@ -221,6 +221,7 @@ System.out.println("pkColList=" + pkColList.get(0));
 	int totalPage = q.getTotalPage(linesPerPage);
 %>
 
+<%= cn.getUrlString() %> - <%= new java.util.Date() %> 
 <pre style="color: #0000FF; font-size: 20px;"><b><%= sql %></b></pre>
 <% if (pgNo>1) { %>
 <a href="Javascript:gotoPage(<%= pgNo - 1%>)"><img border=0 src="image/btn-prev.png" align="top"></a>
