@@ -20,6 +20,7 @@
 	<meta name="description" content="Chingoo is an open-source, web based MySQL database schema navigator." />
 	<meta name="keywords" content="MySQL Web Database OpenSource JDBC" />
 	<meta name="author" content="Spencer Hwang" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
 	
 	<script src="script/jquery-1.7.2.min.js" type="text/javascript"></script>
 	<script src="script/main.js?<%= Util.getBuildNo() %>" type="text/javascript"></script>
