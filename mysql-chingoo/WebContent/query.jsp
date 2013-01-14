@@ -57,6 +57,8 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 <html>
 <head> 
 	<title><%= title %></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+
     <script src="script/jquery-1.7.2.min.js" type="text/javascript"></script>
 
     <script src="script/data-methods.js?<%= Util.getBuildNo() %>" type="text/javascript"></script>

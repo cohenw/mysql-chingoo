@@ -52,6 +52,8 @@
 <html>
   <head>
     <title>Chingoo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+    
 	<meta name="description" content="Chingoo is an open-source, web based MySQL database schema navigator." />
 	<meta name="keywords" content="MySQL Web Database OpenSource JDBC" />
 	<meta name="author" content="Spencer Hwang" />
