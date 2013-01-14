@@ -163,7 +163,6 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 Search <input id="globalSearch" style="width: 200px;"/>
 </td>
  --></table>
-<br/>
 
 <div id="queryMain">
 
@@ -223,8 +222,6 @@ Up to
  -->
 </form>
 
-</div> <!-- end of query main -->
-
 <form name="form0" id="form0">
 <textarea style="display: none;" id="sql" name="sql" ><%= sql %></textarea>
 <input type="hidden" id="sortColumn" name="sortColumn" value="">
@@ -244,6 +241,9 @@ Up to
 <input id="popType" name="type" type="hidden" value="OBJECT">
 <input id="popKey" name="key" type="hidden">
 </form>
+
+</div> <!-- end of query main -->
+
 
 <%= q.getMessage() %>
 
@@ -295,9 +295,11 @@ Up to
 <input type="button" value="Download" onClick="Javascript:download()"/>
 </td>
 <td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>
 <input type="button" value="Reload" onClick="Javascript:reloadQuery()"/>
+<input type="button" value="Edit Query" onClick="Javascript:editQuery()"/>
 </td>
-
 </TABLE>
 </div>
 <BR/>
@@ -335,7 +337,14 @@ Up to
   })();
 
   $(document).ready(function(){
+	  var rc = $("#recordCount").val();
+	  //alert(rc);
+	  if (rc != "0") {
 	  	$("#queryMain").slideUp();
+	    $("#qqq").click(function(){
+	        editQuery();
+	      });
+	  }
    });
 
 </script>
