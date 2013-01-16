@@ -1,6 +1,7 @@
 <%@ page language="java" 
 	import="java.util.*" 
 	import="java.sql.*" 
+	import="java.net.URLEncoder" 
 	import="chingoo.mysql.*" 
 	contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"
@@ -28,6 +29,9 @@
 		}
 	}
 	
+	String encoded = URLEncoder.encode(object, "UTF-8");
+	object = encoded;
+
 	if (oType.equals("TABLE")) {
 		response.sendRedirect("detail-table.jsp?table=" + object);
 	} else if (oType.equals("VIEW")) {
