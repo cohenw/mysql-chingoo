@@ -6,6 +6,31 @@
 	contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"
 %>
+<%!
+public String extractJS(String str) {
+	
+	int start = 0;
+	int end;
+	
+	String res = "";
+
+	while (true) {
+		start = str.indexOf("Javascript:", start);
+		if (start < 0 ) break;
+		end = str.indexOf("'>", start);
+		if (end < 0 ) break;
+		String tk = str.substring(start+11, end);
+				
+		res += tk + "<br/>\n";
+		//System.out.println("*** " + res);
+		start = end;
+	}
+
+	return res;
+}
+
+
+%>
 
 <%
 	ChingooManager gm = ChingooManager.getInstance();
@@ -32,15 +57,16 @@
 
 <b>Chingoo Sessions</b>
 <br/><br/>
-
-<table border=1>
+<%= new Date() %><br/>
+<table id="dataTable" border=1 class="gridBody">
 <tr>
-	<th>Database / User</th>
-	<th>Hist</th>
-	<th>Count</th>
-	<th>Queries</th>
+	<th class="headerRow">Database / User</th>
+	<th class="headerRow">Hist</th>
+	<th class="headerRow">Count</th>
+	<th class="headerRow">Queries</th>
 </tr>
 <% 
+	int rowCnt = 0;
 	for (Connect cn : ss) {
 		HashMap<String,QueryLog> map = cn.getQueryHistory();
 		
@@ -55,9 +81,14 @@
     		}
     	}		
     	String savedHistory = cn.getAddedHistory();
+
+    	rowCnt++;
+    	String rowClass = "oddRow";
+    	if (rowCnt%2 == 0) rowClass = "evenRow";
+    	
 %>
-<tr>
-	<td nowrap valign=top>
+<tr class="simplehighlight">
+	<td valign=top class="<%= rowClass%>">
 		<%= cn.getUrlString() %><br/>
 		IP: <%= cn.getIPAddress() %><br/>
 		Agent: <%= cn.getUserAgent() %><br/>
@@ -65,9 +96,9 @@
 		Login Date: <%= cn.getLoginDate() %><br/>
 		Last Date: <%= cn.getLastDate() %><br/>
 	</td>
-	<td nowrap valign=top><%= savedHistory %>&nbsp;</td>
-	<td nowrap valign=top><%= map.size() %>&nbsp;</td>
-	<td valign=top><p style="white-space:pre;"><%= qry %>&nbsp;</p></td>
+	<td nowrap valign=top class="<%= rowClass%>"><%= extractJS(savedHistory) %>&nbsp;</td>
+	<td nowrap valign=top class="<%= rowClass%>"><%= map.size() %>&nbsp;</td>
+	<td valign=top class="<%= rowClass%>"><p style="white-space:pre;"><%= qry %>&nbsp;</p></td>
 </tr>
 
 
