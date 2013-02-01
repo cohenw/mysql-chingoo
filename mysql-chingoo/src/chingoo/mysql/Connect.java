@@ -74,6 +74,7 @@ public class Connect implements HttpSessionBindingListener {
 
 	private Date loginDate; 
 	private Date lastDate;
+	public String pwd;
 	
 	public String getEmail() {
 		return email;
@@ -99,6 +100,7 @@ public class Connect implements HttpSessionBindingListener {
     	pkMap = new HashMap<String, ArrayList<String>>();
     	loginDate = new Date();
     	lastDate = new Date();
+    	pwd = password;
     	
 //    	history = new Stack<String>();
     	
