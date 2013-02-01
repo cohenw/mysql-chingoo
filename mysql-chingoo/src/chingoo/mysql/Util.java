@@ -174,7 +174,7 @@ public class Util {
 	
 	
 	public static String getVersionDate() {
-		return "Jan 16, 2013";
+		return "Feb 1, 2013";
 	}
 
 	public static boolean isNumber(String inputData) {
@@ -194,7 +194,7 @@ public class Util {
 	}
 
 	public static String getBuildNo() {
-		return "1055";
+		return "1056";
 	}
 
 }

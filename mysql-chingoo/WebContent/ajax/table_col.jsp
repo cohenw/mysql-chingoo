@@ -10,9 +10,6 @@
 	String table = request.getParameter("table");
 	Connect cn = (Connect) session.getAttribute("CN");
 
-//	System.out.println("table="+table);
-//	if (!table.startsWith("\"")) table = table.toUpperCase();
-	
 	String catalog = null;
 	String tname = table;
 	
@@ -35,6 +32,11 @@ Please select a Table to see the detail.
 	
 	String divId="div_" + table;
 	divId = divId.replaceAll("\\.","-");
+
+	ArrayList<String> pk = cn.getPrimaryKeys(catalog, tname);
+	List<TableCol> cols = cn.getTableDetail(catalog, tname);
+
+	if (cols.size()==0) return;
 %>
 
 <div id="<%= divId %>">
@@ -50,12 +52,6 @@ Please select a Table to see the detail.
 </tr>
 <tr>
 <%	
-
-	List<TableCol> cols = cn.getTableDetail(catalog, tname);
-//System.out.println("catalog="+catalog);
-//System.out.println("tname="+tname);
-	ArrayList<String> pk = cn.getPrimaryKeys(catalog, tname);
-
 	for (int i=0; i<cols.size();i++) {
 		TableCol col = cols.get(i);
 		String colName = col.getName();
