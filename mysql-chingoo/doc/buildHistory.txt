@@ -18,4 +18,8 @@ Build 1055
 Build 1056
 	Fix CLOB/BLOB Download servlet when there is no PK
 	Query shows column list only for TVS
-			
+
+Build 1057
+	Tooltip in Query shows column type and length
+	pop.jsp title shows object type
+ 					
