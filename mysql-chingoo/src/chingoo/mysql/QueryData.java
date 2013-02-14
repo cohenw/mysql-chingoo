@@ -24,6 +24,13 @@ public class QueryData {
 			cDef.columnTypeName = rs.getMetaData().getColumnTypeName(i);
 			cDef.columnName = rs.getMetaData().getColumnName(i);
 			cDef.tableName = rs.getMetaData().getTableName(i);
+			cDef.tooltip = cDef.columnTypeName;
+			if (cDef.columnTypeName.equals("NUMBER")) {
+				int scale = rs.getMetaData().getScale(i);
+				int precision = rs.getMetaData().getPrecision(i);
+				cDef.tooltip += "(" + precision + (scale>0?"," + scale : "") + ")";
+			}
+			else if (!(cDef.columnTypeName.equals("DATE")||cDef.columnTypeName.equals("FLOAT")||cDef.columnTypeName.startsWith("INT")||cDef.columnTypeName.startsWith("SMALLINT"))) cDef.tooltip += "(" + rs.getMetaData().getColumnDisplaySize(i) + ")";
 
 			columns.add(cDef);
 			

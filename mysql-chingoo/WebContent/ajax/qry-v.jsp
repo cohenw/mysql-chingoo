@@ -314,7 +314,8 @@ Rows/Page
 			numberCol[colIdx] = Util.isNumberType(colType);
 //System.out.println(colName + "=" + colType);
 
-			String tooltip = q.getColumnTypeName(i) + " " + colType;
+			//String tooltip = q.getColumnTypeName(i) + " " + colType;
+			String tooltip = q.getColumnToolTip(i);
 			String comment =  cn.getComment(tname, colName);
 			if (comment != null && comment.length() > 0) tooltip += " " + comment;
 		
