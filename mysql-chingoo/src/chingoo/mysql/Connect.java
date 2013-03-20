@@ -31,6 +31,7 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
@@ -42,6 +43,13 @@ public class Connect implements HttpSessionBindingListener {
 	private String urlString = null;
 	private String message = "";
 	private List<String> tables;
+	private List<String> views;
+	
+	private HashSet<String> tableSet = new HashSet<String>();
+	private HashSet<String> viewSet = new HashSet<String>();
+
+	private HashSet<String> routines = new HashSet<String>();
+	private HashSet<String> routineSet = new HashSet<String>();
 
 	private HashSet<String> comment_tables = new HashSet<String>();
 	private Hashtable<String,String> comments;
@@ -76,6 +84,10 @@ public class Connect implements HttpSessionBindingListener {
 	private Date lastDate;
 	public String pwd;
 	
+	public String connectMessage = "";
+	
+	public HashSet<String> tempSet;
+
 	public String getEmail() {
 		return email;
 	}
@@ -84,6 +96,7 @@ public class Connect implements HttpSessionBindingListener {
 		this.email = email;
 	}
 
+	
 	/**
 	 * Constructor
 	 * 
@@ -92,12 +105,12 @@ public class Connect implements HttpSessionBindingListener {
 	 * @param password	database password
 	 * @param ipAddress	user's local ip address
 	 */
-    public Connect(String url, String userName, String password, String ipAddress, boolean loadData)
+    public Connect(HttpSession session, String url, String userName, String password, String ipAddress, boolean loadData)
     {
     	//pkColumn = new Hashtable<String, String>();
     	queryResult = new HashMap<String, String>();
     	pkMap = new HashMap<String, ArrayList<String>>();
-    	pkMap = new HashMap<String, ArrayList<String>>();
+    	
     	loginDate = new Date();
     	lastDate = new Date();
     	pwd = password;
@@ -112,11 +125,13 @@ public class Connect implements HttpSessionBindingListener {
             conn.setReadOnly(true);
             
             urlString = userName + "@" + url;  
-            System.out.println ("Database connection established for " + urlString + " @" + (new Date()) + " " + ipAddress);
+            addMessage("Database connection established for " + urlString + " @" + (new Date()) + " " + ipAddress);
+            if (loadData) session.setAttribute("CN", this);
            
             if (!loadData) return; 
             	
             tables = new Vector<String>();
+            views = new Vector<String>();
             comments = new Hashtable<String, String>();
             constraints = new Hashtable<String, String>();
             pkByTab = new Hashtable<String, String>();
@@ -147,8 +162,8 @@ public class Connect implements HttpSessionBindingListener {
         }
     }
     
-    public Connect(String url, String userName, String password, String ipAddress) {
-    	this(url, userName, password, ipAddress, true);
+    public Connect(HttpSession session, String url, String userName, String password, String ipAddress) {
+    	this(session, url, userName, password, ipAddress, true);
 	}    
     
     /**
@@ -286,16 +301,18 @@ public class Connect implements HttpSessionBindingListener {
 		loadData();
 	}
 	
-	private synchronized void loadData() {
+	private synchronized void loadData() throws SQLException {
 		
 		clearCache();
 		
 		loadSchema();
+		loadTVR();
 		loadTables();
 		loadComments();
 		loadConstraints();
 		loadPrimaryKeys();
 		loadForeignKeys();
+//		loadViewTables();
 	}
 
 	private synchronized void loadSchema() {
@@ -360,8 +377,37 @@ public class Connect implements HttpSessionBindingListener {
              e.printStackTrace();
              message = e.getMessage();
  		}
+		addMessage("Loaded Constraints " + constraints.size());
 	}
+/*
+	private synchronized void loadViewTables() {
+		viewTables.clear();
+		try {
+       		Statement stmt = conn.createStatement();
+       		ResultSet rs = stmt.executeQuery("SELECT NAME, REFERENCED_NAME from user_dependencies " +
+       				"where name in ( " +
+       				"SELECT name  from user_dependencies " + 
+       				"WHERE type='VIEW' AND REFERENCED_TYPE IN ('TABLE') " + 
+       				"group by name having count(*)=1 " +
+       				") AND REFERENCED_NAME NOT IN ('DUAL','STANDARD') AND REFERENCED_TYPE IN ('TABLE')");	
 
+       		while (rs.next()) {
+       			String viewName = rs.getString(1);
+       			String tableName = rs.getString(2);
+       			viewTables.put(viewName, tableName);
+       		}
+       		rs.close();
+       		stmt.close();
+
+		} catch (SQLException e) {
+             System.err.println ("loadViewTables");
+             e.printStackTrace();
+             message = e.getMessage();
+ 		}
+		addMessage("Loaded View/Table " + viewTables.size());
+
+	}
+*/
 	private synchronized void loadPrimaryKeys() {
 		pkByTab.clear();
 		pkByCon.clear();
@@ -388,7 +434,7 @@ public class Connect implements HttpSessionBindingListener {
              e.printStackTrace();
              message = e.getMessage();
  		}
- 		
+		addMessage("Loaded Primary Keys " + pkByTab.size());
 	}
 
 	private synchronized void loadForeignKeys() {
@@ -418,7 +464,7 @@ public class Connect implements HttpSessionBindingListener {
              e.printStackTrace();
              message = e.getMessage();
  		}
- 		
+		addMessage("Loaded Foreign Keys " + foreignKeys.size());
 	}
 
 	private synchronized void loadComment(String tname) {
@@ -543,7 +589,45 @@ public class Connect implements HttpSessionBindingListener {
 		return res;
 		
 	}
-	
+
+	private synchronized void loadTVR() throws SQLException {
+		tables.clear();
+		views.clear();
+		routines.clear();
+		
+		tableSet.clear();
+		viewSet.clear();
+		routineSet.clear();
+		
+		Statement stmt = conn.createStatement();
+		String qry = "select 'TABLE' as TYPE, TABLE_NAME from information_schema.TABLES WHERE table_type='BASE TABLE' AND table_schema='"+ getSchemaName()+"'"
+				+ " UNION ALL "
+				+ "SELECT 'VIEW' as TYPE, TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE table_schema='"+ getSchemaName()+"'"
+				+ " UNION ALL "
+				+ "SELECT 'ROUTINE' as TYPE, ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE routine_schema ='"+getSchemaName()+"'";
+		ResultSet rs = stmt.executeQuery(qry);
+		while (rs.next()){
+			String name = rs.getString(2).toUpperCase();
+			String type = rs.getString(1);
+
+			if (type.equals("TABLE")) tables.add(name);
+			else if (type.equals("VIEW")) views.add(name);
+			else if (type.equals("ROUTINE")) routines.add(name);
+//			else if (type.equals("PROCEDURE")||type.equals("FUNCTION")) procedureSet.add(name);
+		}
+		
+		rs.close();
+		stmt.close();
+		
+		tableSet.addAll(tables);
+		viewSet.addAll(views);
+		routineSet.addAll(routines);
+		
+		addMessage("Loaded Tables " + tables.size());
+		addMessage("Loaded Views " + views.size());
+		addMessage("Loaded Routines " + routines.size());
+	}
+
 	private synchronized void loadTables() {
 		tables.clear();
 		try {
@@ -1291,18 +1375,12 @@ System.out.println(qry);
 		return qry;
 	}
 	public String getObjectType(String oname) {
-		if (oname.contains(".")) {
-			String[] temp = oname.split("\\.");
-			return getObjectType(temp[0], temp[1]);
-		}
-		
-		String qry = "SELECT OBJECT_TYPE FROM USER_OBJECTS WHERE OBJECT_NAME='" + oname + "'";
-		return queryOne(qry);
-	}
 
-	public String getObjectType(String owner, String oname) {
-		String qry = "SELECT OBJECT_TYPE FROM ALL_OBJECTS WHERE OWNER='" + owner + "' AND OBJECT_NAME='" + oname + "'";
-		return queryOne(qry);
+		if (tableSet.contains(oname)) return "TABLE";
+		if (viewSet.contains(oname)) return "VIEW";
+		if (routineSet.contains(oname)) return "ROUTINE";
+		
+		return "";
 	}
 
 	/**
@@ -1732,4 +1810,28 @@ for (String col : cols) {
 		return list;
 	}
 
+	public boolean isTV(String oname) {
+		
+		if (tableSet.contains(oname)) return true;
+		if (viewSet.contains(oname)) return true;
+
+		return false;
+	}
+
+	public boolean isRoutine(String oname) {
+		
+		if (routineSet.contains(oname)) return true;
+		
+		return false;
+	} 
+
+	public void addMessage(String msg) {
+		connectMessage += msg + "<br/>";
+		System.out.println(msg);
+	}
+	
+	public String getConnectMessage() {
+		return this.connectMessage +"<img src='image/loading.gif'/>";
+	}
+	
 }

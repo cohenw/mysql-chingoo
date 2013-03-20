@@ -66,9 +66,9 @@
 <b>Definition</b> 
 <a href="Javascript:toggleDiv('imgDef','divDef')"><img id="imgDef" src="image/minus.gif"></a>
 <div id="divDef" style="margin-left: 20px;">
-<pre>
-<%= text %>
-</pre>
+<div style="font-family: Consolas;">
+<%=new HyperSyntax().getHyperSyntax(cn, text, "VIEW")%>
+</div>
 </div>
 
 

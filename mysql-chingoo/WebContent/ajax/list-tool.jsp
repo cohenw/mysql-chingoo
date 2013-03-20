@@ -11,7 +11,7 @@
 	String filter = request.getParameter("filter");
 
 	List<String> list = new ArrayList<String>();
-	list.add("Search DB Content");
+	list.add("Search Table Data");
 //	list.add("Search Program");
 	list.add("Table Column");
 	list.add("Schema Diff");

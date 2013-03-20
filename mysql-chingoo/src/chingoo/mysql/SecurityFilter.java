@@ -21,6 +21,7 @@ public class SecurityFilter implements Filter {
 			"ping.jsp",
 			"remove-cookie.jsp",
 			"connect_new.jsp", 
+			"connect-progress.jsp",
 			"connect_behind.jsp",
 			"no-connection.jsp"};
 	

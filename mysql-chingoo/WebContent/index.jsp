@@ -55,8 +55,12 @@ $(document).ready(function(){
 		var filter = $(this).val().toUpperCase();
 		searchWithFilter1(filter);
 	})
-
- 	$('#searchFilter2').change(function(){
+	$('#hideEmpty').change(function(){
+		var filter = $('#searchFilter1').val().toUpperCase();
+		searchWithFilter1(filter);
+	})
+	
+	$('#searchFilter2').change(function(){
 		var filter = $(this).val().toUpperCase();
 		searchWithFilter2(filter);
  	})
@@ -133,6 +137,8 @@ $(document).ready(function(){
 			var newH = h - 80;
 
 			var tmp = w - $('#tabs').width() - $('#outer-result2').width() - 45; 
+			if (!$("#outer-result2").is(":visible"))
+				tmp = w - $('#tabs').width() - 45;
 
 //			$('#outer-table').height(newH-diff);
 			$('#outer-result1').height(newH);
@@ -196,7 +202,10 @@ function loadList(url, targetDiv) {
 }
 
 function searchWithFilter1(filter) {
-	gotoUrl = "ajax/list-table.jsp?filter=" + filter;
+	if($('#hideEmpty').attr('checked'))
+		gotoUrl = "ajax/list-table.jsp?filter=" + filter+"&hideEmpty=true";
+	else 
+		gotoUrl = "ajax/list-table.jsp?filter=" + filter;
 
 	$.ajax({
 		url: gotoUrl,
@@ -210,7 +219,10 @@ function searchWithFilter1(filter) {
 	
 }
 function searchWithFilter2(filter) {
-	gotoUrl = "ajax/list-view.jsp?filter=" + filter;
+	if($('#hideEmpty').attr('checked'))
+		gotoUrl = "ajax/list-table.jsp?filter=" + filter+"&hideEmpty=true";
+	else 
+		gotoUrl = "ajax/list-table.jsp?filter=" + filter;
 
 	$.ajax({
 		url: gotoUrl,
@@ -269,18 +281,26 @@ function loadSchema(sName) {
 	});	
 }
 
+function hideHist() {
+	$("#outer-result2").hide();
+	checkResize();
+}
 </script>
 
 
 </head> 
 
-<body>
+<body style="margin-top: 0px;">
 
-<table width=100%>
-<td><img src="image/chingoo-small.gif" title="Build <%= Util.getBuildNo() %>"/></td>
-<td valign=bottom><h3><%= cn.getUrlString() %></h3></td>
-<td>
+<table width=100% border=0>
+<td width="44">
+<img align=top src="image/chingoo-small.gif" title="Oracle Chingoo - Build <%= Util.getBuildNo() %>"/>
+</td>
+
+<td><b><%= cn.getUrlString() %></b></td>
+
 &nbsp;
+<td>
 <select name="schema" id="shcmeaList" onchange="loadSchema(this.options[this.selectedIndex].value);">
 	<option></option>
 <% for (int i=0; i<cn.getSchemas().size();i++) { %>
@@ -291,10 +311,10 @@ function loadSchema(sName) {
 </td>
 
 <td>
-<a href="index.jsp">Home</a> |
-<a href="query.jsp" target="_blank">Query</a> |
-<a href="worksheet.jsp" target="_blank">Work Sheet</a> |
-<a href="javascript:queryHistory()">History</a> |
+<!-- <a href="index.jsp">Home</a> |
+ --><a href="query.jsp" target="_blank">Query</a> |
+<!-- <a href="worksheet.jsp" target="_blank">Work Sheet</a> |
+ --><a href="javascript:queryHistory()">History</a> |
 <a href="javascript:clearCache()">Clear Cache</a> |
 <a href='Javascript:aboutChingoo()'>About Chingoo</a> |
 <a href="logout.jsp">Log out</a>
@@ -307,11 +327,12 @@ Keep Alive <a id="keepalivelink" href="Javascript:toggleKeepAlive()">Off</a>
 
 </td>
 <td align=right>
-<b>Search</b> <input id="globalSearch" style="width: 160px;"/>
-<a href="Javascript:clearField2()"><img border=0 src="image/clear.gif"></a>
+<b>Global Search</b> <input id="globalSearch" style="width: 200px;"  placeholder="table, view or package name"/>
+<!-- <a href="Javascript:clearField2()"><img border=0 src="image/clear.gif"></a>
+ -->
+<input type="button" value="Find" onClick="Javascript:globalSearch($('#globalSearch').val())"/>
 </td>
 </table>
-
 
 <table border=0 cellspacing=0>
 <td valign=top width=280>
@@ -325,17 +346,18 @@ Keep Alive <a id="keepalivelink" href="Javascript:toggleKeepAlive()">Off</a>
 	</ul>
 <div id="tabs2" style="overflow: auto;">
 	<div id="tabs-1">
-<b>Filter</b> <input id="searchFilter1" style="width: 180px;"/>
+<b>Filter</b> <input id="searchFilter1" style="width: 180px;"  placeholder="table name"/>
 <a href="Javascript:clearField1()"><img border=0 src="image/clear.gif"></a>
+<br/><input id="hideEmpty" value="1" type="checkbox">Hide Empty tables
 <div id="list-table"></div>
 	</div>
 	<div id="tabs-2">
-<b>Filter</b> <input id="searchFilter2" style="width: 180px;"/>
+<b>Filter</b> <input id="searchFilter2" style="width: 180px;"  placeholder="view name"/>
 <a href="Javascript:clearField2()"><img border=0 src="image/clear.gif"></a>
 <div id="list-view"></div>
 	</div>
 	<div id="tabs-3">
-<b>Filter</b> <input id="searchFilter3" style="width: 180px;"/>
+<b>Filter</b> <input id="searchFilter3" style="width: 180px;" placeholder="routine name"/>
 <a href="Javascript:clearField3()"><img border=0 src="image/clear.gif"></a>
 <div id="list-package"></div>
 	</div>
@@ -359,6 +381,7 @@ Keep Alive <a id="keepalivelink" href="Javascript:toggleKeepAlive()">Off</a>
 </td>
 <td valign=top>
 <div id="outer-result2">
+	<a href="Javascript:hideHist()" style="float:right;">hide</a>
 	<div id="inner-result2"><%= addedHistory %></div>
 </div>
 </td>

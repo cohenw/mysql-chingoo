@@ -13,6 +13,16 @@
 
 	String table = request.getParameter("table");
 	String key = request.getParameter("key");
+	
+	String qry = request.getParameter("qry");
+	if (qry != null && !qry.equals("")) {
+		int idx = qry.indexOf("|");
+		table = qry.substring(0,idx);
+		key = qry.substring(idx+1).replaceAll("\\|", "^");
+//		System.out.println("table=" + table);
+//		System.out.println("key=" + key);
+	}
+	
 	List<String> refTabs = cn.getReferencedTables(table);
 
 	String sql = cn.getPKLinkSql(table, key);
@@ -67,7 +77,10 @@
 	String id = Util.getId();
 %>
 
-<img src="image/data-link.png" align="middle"/> <b>DATA LINK</b>
+<div style="background-color: #ffffff;">
+<img src="image/star-big.png" align="middle"/>
+
+ <b>DATA LINK</b>
 &nbsp;&nbsp;
 <%= cn.getUrlString() %>
 
@@ -82,9 +95,12 @@
 <a id="showERD" href="Javascript:showERD('<%=table%>')">Show ERD</a>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="Javascript:openWorksheet()">Open Work Sheet</a>
+<!-- <a href="Javascript:openWorksheet()">Open Work Sheet</a>
+ -->
 
-<br/><br/>
+Search <input id="globalSearch" style="width: 200px;" placeholder="table or view name"/>
+</div>
+
 
 <div id="tableList1" style="display: hidden; margin-left: 20px;">
 </div>
@@ -177,7 +193,7 @@
 
 
 <div style="display: none;">
-<form name="form0" id="form0" action="query.jsp">
+<form name="form0" id="form0" action="query.jsp" target="_blank">
 <input id="sql" name="sql" type="hidden" value=""/>
 <input id="dataLink" name="dataLink" type="hidden" value="1"/>
 <input id="id" name="id" type="hidden" value=""/>

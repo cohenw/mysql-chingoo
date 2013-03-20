@@ -70,28 +70,29 @@
   </head>
   
   <body>
-  <img src="image/chingoo.png"  title="Version <%= Util.getVersionDate() %>"/>
     <h2>Welcome to MySQL Chingoo.</h2>
 
-<b>Connect to database</b>
-	<form action="connect_new.jsp" method="POST">
+   <img src="image/chingoo.png" title="<%= Util.getVersionDate() + " Build" + Util.getBuildNo() %>" width=128 height=128/>
+
+<form action="connect_new.jsp" method="POST">
+
+
     <table border=0>
     <tr>
-    	<td>JDBC URL</td>
-    	<td><input size=60 name="url" id="url" value="<%= initJdbcUrl %>"/></td>
+    	<td><span style="font-size:20px; color: blue;">JDBC URL</span></td>
+    	<td><input style="font-size:20px;" size=60 name="url" id="url" value="<%= initJdbcUrl %>"/></td>
     </tr>
     <tr>
-    	<td>User Name</td>
-    	<td><input name="username" id="username" value="<%= initUserName %>"/></td>
+    	<td><span style="font-size:20px; color: blue;">User Name</span></td>
+    	<td><input style="font-size:20px;" name="username" id="username" value="<%= initUserName %>"/></td>
     </tr>
     <tr>
-    	<td>Password</td>
-    	<td><input name="password" type="password"/></td>
+    	<td><span style="font-size:20px; color: blue;">Password</span></td>
+    	<td><input style="font-size:20px;" name="password" type="password"/></td>
     </tr>
     </table>
     <input type="submit" value="Connect"/>
 	</form>
-
 <br/>
 
 

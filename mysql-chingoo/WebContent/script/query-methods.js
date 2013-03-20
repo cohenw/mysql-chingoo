@@ -330,17 +330,46 @@ var qryPage = 'ajax/qry.jsp';
 				hideIfAny();
 				
 				setHighlight();
-				//$('body').css('cursor', 'default'); 
-				
-				$("#qqq").click(function(){
-			        editQuery();
-			    });						
+				refreshSummary();	
+			},
+            error:function (jqXHR, textStatus, errorThrown){
+            	alert(jqXHR.status + " " + errorThrown);
+            }  
+		});	
+	}
 
-				$('#qqq').hover(function(){
-					$(this).addClass('datahighlight');
-				},function(){
-					$(this).removeClass('datahighlight');
-				});	    
+	function reloadSummary() {
+		$("#summary-div").hide();
+		$("#summary-div").html("<div id='wait'><img src='image/loading.gif'/></div>");
+		
+		//$('body').css('cursor', 'wait'); 
+		$.ajax({
+			type: 'POST',
+			url: 'qry-summary.jsp',
+			data: $("#form0").serialize(),
+			success: function(data){
+				$("#summary-div").append(data);
+				$("#wait").remove();
+				$("#summary-div").slideDown();
+				setHighlight();
+			},
+            error:function (jqXHR, textStatus, errorThrown){
+            	alert(jqXHR.status + " " + errorThrown);
+            }  
+		});	
+	}
+
+	function refreshSummary() {
+		var v = $("#summary").val();
+		if (v==0) return;
+
+		$.ajax({
+			type: 'POST',
+			url: 'qry-summary.jsp',
+			data: $("#form0").serialize(),
+			success: function(data){
+				$("#summary-div").html(data);
+				setHighlight();
 			},
             error:function (jqXHR, textStatus, errorThrown){
             	alert(jqXHR.status + " " + errorThrown);
@@ -601,6 +630,18 @@ function togglePreFormat() {
 	$("#preFormat").val(v);
 //	alert(v);
 	reloadData();
+}
+
+function toggleSummary() {
+	var v = $("#summary").val();
+	v = (v=="1"?"0":"1");
+	$("#summary").val(v);
+	//alert(v);
+	if (v=='1') {
+		reloadSummary();
+
+	} else
+		$("#summary-div").slideUp();
 }
 
 function toggleText(arg1, arg2) {
