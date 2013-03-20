@@ -22,4 +22,19 @@ Build 1056
 Build 1057
 	Tooltip in Query shows column type and length
 	pop.jsp title shows object type
- 					
+
+Build 1058
+	Open new page when new query is selected from data-link
+	data link url use new url form
+	placeholder for input box
+	show connecting progress
+	Checkbox for hide empty tables
+	Show detail link beside table/view name in Query
+	Fixed the tooltip for column description - lowsercase, no size for rowid type
+	Syntax Highlight and Hyper Link for SQL
+
+Build 1059
+	Summary for query result (Count, Min, Max, Sum)
+	Dynamic Summary based on search / filter
+
+  					

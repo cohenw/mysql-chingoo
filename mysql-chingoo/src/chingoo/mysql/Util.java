@@ -172,11 +172,6 @@ public class Util {
 		return tname;
 	}
 	
-	
-	public static String getVersionDate() {
-		return "Feb 12, 2013";
-	}
-
 	public static boolean isNumber(String inputData) {
 		return NumberUtils.isNumber(inputData);
 		//return inputData.matches("[-+]?\\d+(\\.\\d+)?");
@@ -189,12 +184,20 @@ public class Util {
 		return ipAddress;
 	}
 
+	public static String getScriptionVersion() {
+		return getBuildNo();
+	}
+
 	public static String trackingId() {
 		return "UA-34001958-1";
 	}
 
+	public static String getVersionDate() {
+		return "Mar 20, 2013";
+	}
+
 	public static String getBuildNo() {
-		return "1057";
+		return "1059";
 	}
 
 }

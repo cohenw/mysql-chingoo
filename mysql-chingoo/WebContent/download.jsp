@@ -22,6 +22,7 @@
 	OldQuery q = new OldQuery(cn, q2, request);
 	ResultSet rs = q.getResultSet();
 	
+	out.println("MySQL Chingoo,downloaded at " + (new Date()));
 	out.println("database,"+ cn.getUrlString() + " catalog: " + cn.getSchemaName());
 	
 	String q1 = sql.replaceAll("\n", " ").trim();

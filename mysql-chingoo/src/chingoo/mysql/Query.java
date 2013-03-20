@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,8 @@ public class Query {
 	String originalQry;
 	String targetQry;
 	QueryData qData;
+
+	ArrayList<RowDef> summary = new ArrayList<RowDef>();
 
 	Date start = new Date();
 	int elapsedTime;
@@ -662,4 +665,116 @@ public class Query {
 	public boolean isError() {
 		return this.isError;
 	}
+
+	public static String customFormat(String pattern, double value ) {
+		DecimalFormat myFormatter = new DecimalFormat(pattern);
+		String output = myFormatter.format(value);
+
+		return output;
+	}
+	   
+	public static String fmt(double d)
+	{
+        String tmp = customFormat("###,###,###,###.#####", d);
+	        
+        return tmp;
+        //tmp.replaceAll("[0]*$", "").replaceAll(".$", "");
+	}
+	
+	public void calcSummary() {
+		summary.clear();
+		
+		RowDef sumCount = new RowDef();
+		RowDef sumMin = new RowDef();
+		RowDef sumMax = new RowDef();
+		RowDef sumSum = new RowDef();
+		
+		int rowSize = qData.rows.size();
+		int colSize = qData.columns.size();
+
+		for (int j=0;j<colSize;j++) {
+		
+			int cnt=0;
+			double minNum= 9999999999.0;
+			String minStr = null;
+
+			double maxNum= -9999999999.0;
+			String maxStr = null;
+
+			double sumNum= 0;
+
+			int colType = this.getColumnType(j);
+			boolean isNumberType = Util.isNumberType(colType);				
+
+			for (int i=0;i<rowSize;i++) {
+				if (hideRow[i]) continue;
+				DataDef v = qData.rows.get(i).row.get(j);
+				if (v.value != null && !v.value.equals("")) { 
+					cnt ++;
+
+					if (isNumberType) {
+						double value = Double.parseDouble(v.value);
+						if (value < minNum) minNum = value;
+						if (value > maxNum) maxNum = value;
+						sumNum += value;
+					} else {
+						String value = v.value;
+						if ( minStr==null || value.compareTo(minStr) < 0) minStr = value;
+						if ( maxStr==null || value.compareTo(maxStr) > 0) maxStr = value;
+					}
+				}
+			}
+			DataDef data1 = new DataDef();
+			data1.value = fmt(cnt);
+			sumCount.row.add(data1);
+
+			DataDef data2 = new DataDef();
+			if (isNumberType) {
+				data2.value = fmt(minNum);
+				if (minNum == 9999999999.0) data2.value = null;
+			}
+			else
+				data2.value = minStr;
+			sumMin.row.add(data2);
+
+			DataDef data3 = new DataDef();
+			if (isNumberType) {
+				data3.value = fmt(maxNum);
+				if (maxNum == -9999999999.0) data3.value = null;
+			}
+			else
+				data3.value = maxStr;
+			sumMax.row.add(data3);
+
+			DataDef data4 = new DataDef();
+			if (isNumberType) {
+				data4.value = fmt(sumNum);
+			}
+			else
+				data4.value = null;
+			sumSum.row.add(data4);
+		}		
+
+		summary.add(sumCount);
+		summary.add(sumMin);
+		summary.add(sumMax);
+		summary.add(sumSum);
+	}
+	
+	public String getSummaryCount(int col) {
+		return summary.get(0).row.get(col-1).value;
+	}
+
+	public String getSummaryMin(int col) {
+		return summary.get(1).row.get(col-1).value;
+	}
+	
+	public String getSummaryMax(int col) {
+		return summary.get(2).row.get(col-1).value;
+	}
+
+	public String getSummarySum(int col) {
+		return summary.get(3).row.get(col-1).value;
+	}
+
 }

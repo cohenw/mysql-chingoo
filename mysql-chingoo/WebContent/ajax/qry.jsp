@@ -222,7 +222,7 @@ System.out.println("pkColList=" + pkColList.get(0));
 %>
 
 <span style="color:#666666;"><%= cn.getUrlString() %> - <%= new java.util.Date() %></span> 
-<pre style="color: #0000FF; font-size: 18px;"><b id="qqq"><%= sql %></b><a title="Edit Query" style="margin-left: 10px;" href="Javascript:editQuery()"><img border=0 src="image/sql.png"></a></pre>
+<pre style="font-family: Consolas; font-size: 16px;"><b id="qqq"><%=new HyperSyntax().getHyperSyntax(cn, sql, "SQL")%></b><a title="Edit Query" style="margin-left: 10px;" href="Javascript:editQuery()"><img border=0 src="image/sql.png"></a></pre>
 
 <% if (pgNo>1) { %>
 <a href="Javascript:gotoPage(<%= pgNo - 1%>)"><img border=0 src="image/btn-prev.png" align="top"></a>
@@ -261,7 +261,7 @@ Rows/Page
 
 <% if (totalCount > 1) { %>
 &nbsp;&nbsp;<img src="image/view.png">
-<input id="search" name="search" value="<%= searchValue %>" size=20 onChange="searchRecords($(this).val())">
+<input id="search" name="search" value="<%= searchValue %>" size=20 onChange="searchRecords($(this).val())" placeholder="search">
 <a href="Javascript:clearSearch()"><img border="0" src="image/clear.gif"></a>
 <% } %>
 
@@ -280,6 +280,7 @@ Rows/Page
 		String txt = "Format";
 %>
 <a id="preFormatText" href="Javascript:togglePreFormat()"><%= txt %></a>
+<a href="Javascript:setTranspose()">Transpose</a>
 <% } %>
 
 
@@ -375,6 +376,7 @@ Rows/Page
 		
 		String linkUrl = "ajax/pk-link.jsp?table=" + tname + "&key=" + Util.encodeUrl(keyValue);
 		String linkUrlTree = "data-link.jsp?table=" + tname + "&key=" + Util.encodeUrl(keyValue);
+		linkUrlTree = "data-link.jsp?qry=" + tname + "|" + keyValue;
 %>
 	<td class="<%= rowClass%>">
 	<% if (pkLink && false) { %>

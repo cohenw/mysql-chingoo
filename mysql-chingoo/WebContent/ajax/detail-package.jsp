@@ -23,7 +23,7 @@
 	
 	String catalog = cn.getSchemaName();
 
-	String sourceUrl = "source.jsp?name=" + name;
+	String sourceUrl = "src.jsp?name=" + name;
 	if (owner != null) sourceUrl += "&owner=" + owner;
 	
 	String qry = "SELECT routine_type, data_type, routine_definition, routine_comment FROM information_schema.routines WHERE ROUTINE_NAME='" + name +"' AND ROUTINE_SCHEMA='" + catalog + "'";
@@ -63,7 +63,8 @@ Parameters
 
 
 <pre>
-<%= def %>
+<%=new HyperSyntax().getHyperSyntax(cn, def, "VIEW")%>
 </pre>
+
 
 

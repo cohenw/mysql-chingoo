@@ -47,7 +47,9 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 	
 	// get table name
 	String tbl = null;
-	List<String> tbls = Util.getTables(sql); 
+//	List<String> tbls = Util.getTables(sql);
+	List<String> tbls = new HyperSyntax().getTables(cn, sql);
+	
 	if (tbls.size()>0) tbl = tbls.get(0);	
 //	System.out.println("XXX TBL=" + tbl);
 	String title = sql;	
@@ -140,31 +142,32 @@ System.out.println(cn.getUrlString() + " " + Util.getIpAddress(request) + " " + 
 	function reloadQuery() {
 		$("#form1").submit();		
 	}
-	
+
+    $(function() {
+        $( "input[type=button], button" )
+          .button()
+          .click(function( event ) {
+            event.preventDefault();
+          });
+      });
+
 	</script>    
 </head> 
 
 <body>
 
-<table>
-<td>
+<div style="background-color: #ffffff;">
 <img src="image/icon_query.png" align="middle"/> <b>QUERY</b>
-</td>
-<td>
-<b><%= cn.getUrlString() %></b>
+<%= cn.getUrlString() %>
 &nbsp;&nbsp;&nbsp;
-</td>
-<td>
 <a href="query.jsp" target="_blank">Query</a> |
-<a href="q.jsp" target="_blank">Q</a> |
+<!-- <a href="q.jsp" target="_blank">Q</a> |
+ -->
 <a href="erd_svg.jsp?tname=<%= tbl %>" target="_blank">ERD</a> |
 <a href="worksheet.jsp" target="_blank">Work Sheet</a>
-</td>
-<td>&nbsp;&nbsp;&nbsp;</td>
-<!-- <td>
-Search <input id="globalSearch" style="width: 200px;"/>
-</td>
- --></table>
+&nbsp;&nbsp;&nbsp;
+Search <input id="globalSearch" style="width: 200px;" placeholder="table or view name"/>
+</div>
 
 <div id="queryMain">
 
@@ -237,6 +240,7 @@ Up to
 <input type="hidden" id="rowsPerPage" name="rowsPerPage" value="20">
 <input type="hidden" id="dataLink" name="dataLink" value="1">
 <input type="hidden" id="preFormat" name="preFormat" value="0">
+<input type="hidden" id="summary" name="summary" value="0">
 </form>
 
 <form id="FormPop" name="FormPop" target="_blank" method="post" action="pop.jsp">
@@ -266,38 +270,27 @@ Up to
 <hr noshade color="green">
 <BR/>
 
-<div id="buttonsDiv" style="display: none;">
+<div id="buttonsDiv" style="display: block;">
 <TABLE>
 <TD><a class="qryBtn" id="modeSort" href="Javascript:setDoMode('sort')">Sort</a>
 <TD><a class="qryBtn" id="modeCopy" href="Javascript:setDoMode('copy')">Copy&amp;Paste</a></TD>
-<!-- <TD><a class="qryBtn" id="modeCopy" href="Javascript:setTranspose()">Transpose</a></TD>
- --><!-- <TD><a class="qryBtn" id="modeHide" href="Javascript:setDoMode('hide')">Hide Column</a>
+<TD><a class="qryBtn" id="modeHide" href="Javascript:setDoMode('hide')">Hide Column</a>
 	<span id="showAllCol" style="display: none;">
-		<a href="Javascript:showAllColumn()">Show All Column</a>&nbsp;
+		<a href="Javascript:showAllColumn()">Show All</a>&nbsp;
 	</span>
 </TD>
- -->
- </TD>
-<!--
-<TD><a class="qryBtn" id="modeFilter" href="Javascript:setDoMode('filter')">Filter</a></TD>
-<TD><span id="filter-div"></span></TD>
- -->
-<!-- <TD><a class="qryBtn" id="modeFilter2" href="Javascript:setDoMode('filter2')">Filter</a></TD>
- -->
 
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;&nbsp;&nbsp;</td>
 <td>
-<input type="button" value="Transpose" onClick="Javascript:setTranspose()"/>
-</td>
-<td>
+<input type="button" value="Summary" onClick="Javascript:toggleSummary()"/>
 <input type="button" value="Filter" onClick="Javascript:filter2()"/>
 </td>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;&nbsp;&nbsp;</td>
 <td>
 <input type="button" value="Download" onClick="Javascript:download()"/>
 </td>
 <td>
-<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;&nbsp;&nbsp;</td>
 <td>
 <input type="button" value="Reload" onClick="Javascript:reloadQuery()"/>
 <input type="button" value="Edit Query" onClick="Javascript:editQuery()"/>
@@ -305,6 +298,7 @@ Up to
 </TABLE>
 </div>
 <BR/>
+<div id="summary-div" style="display:none"></div>
 <div id="filter2-div" style="display:none"></div>
 
 <div id="data-div">
@@ -343,14 +337,6 @@ Up to
 	  //alert(rc);
 	  if (rc != "0") {
 	  	$("#queryMain").slideUp();
-	    $("#qqq").click(function(){
-	        editQuery();
-	      });
-		$('#qqq').hover(function(){
-			$(this).addClass('datahighlight');
-		},function(){
-			$(this).removeClass('datahighlight');
-		});	    
 	  }
    });
 
